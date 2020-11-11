@@ -1,0 +1,8 @@
+#!/bin/bash
+
+SIZE=$(zenity --entry --title="Geometrie Argument" --text="Geometrie Argument eingeben:")
+
+while [ $# -gt 0 ]; do
+	convert "$1" -resize $SIZE "$1"
+	shift
+done

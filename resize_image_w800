@@ -1,0 +1,5 @@
+#!/bin/bash
+while [ $# -gt 0 ]; do
+	convert "$1" -resize 800 "$1"
+	shift
+done

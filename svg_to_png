@@ -1,0 +1,8 @@
+#!/bin/bash
+
+SIZE=$(zenity --entry --title="Breite" --text="Breite in Pixel eingeben:")
+
+while [ $# -gt 0 ]; do
+	convert -density 1200 -background none -resize $SIZE "$1" "$1".png
+	shift
+done
