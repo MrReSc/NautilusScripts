@@ -1,0 +1,41 @@
+<h1 id="gnome-files-nautilus-durch-skripte-erweitern">Gnome Files (Nautilus) durch Skripte erweitern</h1>
+<p>Ein Nautilus-Skript ist ein ausführbares Shell-Skript, das in einem speziellen Skripte-Verzeichnis abgelegt wird, sodass die grafische Nautilus-Shell es finden kann. Auf diese Weise kann man die Funktionalität des Dateibrowsers erweitern, um so gut wie alles zu tun.</p>
+<p><img src="GNOME_Files.png" /></p>
+<p>Skripte werden aufgerufen, indem man eine Datei oder eine Gruppe von Dateien auswählt und mit der rechten Maustaste klickt, um das Kontextmenü aufzurufen. Eine der Optionen in diesem Menü ist das Untermenü <code>Skripte</code>, mit dem man ein Skript auswählen kann, das auf die ausgewählten Dateien angewendet werden soll.</p>
+<p><img src="run_script.png" /></p>
+<p>Das Untermenü <code>Skripte</code> erscheint nur, wenn mindestens ein Skript im Skripte-Verzeichnis liegt.</p>
+<h2 id="skript-erstellen">Skript erstellen</h2>
+<p>Damit ein Skript von Nautilus gefunden werden kann, muss es sich im Skripte-Verzeichnis <code>~/.local/share/nautilus/scripts/</code> befinden. Dieser Ordner befindet sich im Home-Verzeichnis, ist aber standardmässig versteckt. Mit der Tastenkombination <code>Strg+H</code> können versteckte Dateien und Ordner in Nautilus angezeigt werden.</p>
+<p>Damit Skripte nutzbar sind, müssen sie als ausführbar gekennzeichnet werden. Um ein Skript ausführbar zu machen, klickt man entweder mit der rechten Maustaste auf ein Skript und wählt <code>Eigenschaften → Zugriffsrechte → Datei als Programm ausführen</code> oder man verwendet den folgenden Befehl im Terminal:</p>
+<pre><code>chmod +x name-des-skript</code></pre>
+<p>Immer wenn ein Skript aufgerufen wird, setzt Nautilus automatisch eine Handvoll Umgebungsvariablen, die man in den Skripten verwenden kann.</p>
+<ul>
+<li><p><code>NAUTILUS_SCRIPT_SELECTED_FILE_PATHS</code> Zeilenumbruch getrennte Pfade für ausgewählte Dateien (nur wenn lokal)</p></li>
+<li><p><code>NAUTILUS_SCRIPT_SELECTED_URIS</code> Zeilenumbruch getrennte URIs für ausgewählte Dateien</p></li>
+<li><p><code>NAUTILUS_SCRIPT_CURRENT_URI</code> aktueller Speicherort</p></li>
+<li><p><code>NAUTILUS_SCRIPT_WINDOW_GEOMETRY</code> Position und Grösse des aktuellen Fensters</p></li>
+</ul>
+<h2 id="beispiele">Beispiele</h2>
+<h3 id="markdown-in-html-konvertieren">Markdown in HTML konvertieren</h3>
+<p>Um Markdown Dateien in HTML zu konvertieren benutze ich <a target="_blank" rel="noopener" href="https://pandoc.org/">pandoc</a>.</p>
+<pre><code>#!/bin/bash
+
+while [ $# -gt 0 ]; do
+    pandoc &quot;$1&quot; -o &quot;$1&quot;&quot;.html&quot;
+    shift
+done</code></pre>
+<p>Wenn das Skript in Nautilus ausgeführt wird, wird im selben Verzeichnis eine HTML Datei erstellt.</p>
+<h3 id="bild-skalieren">Bild skalieren</h3>
+<p>Um eine Bilddatei zu skalieren verwende ich den Befehl <code>convert</code> mit dem Schalter <code>-resize</code> von <a target="_blank" rel="noopener" href="https://imagemagick.org/index.php">imagemagick</a>. Der Schalter <code>-resize</code> benötigt ein <a target="_blank" rel="noopener" href="https://www.imagemagick.org/script/command-line-processing.php#geometry">geometrie Argument</a>. Erwähnenswert sind: * <code>scale%</code> Höhe und Breite werden mit angegebenem Prozentsatz skaliert * <code>width</code> Breite vorgegeben, Höhe wird automatisch berechnet, um das Seitenverhältnis zu erhalten * <code>widthxheight</code> Maximale Werte von Höhe und Breite, Seitenverhältnis wird beibehalten</p>
+<p>Um das Skript vielseitig zu verwenden, habe ich eine grafische Eingabe mit <a target="_blank" rel="noopener" href="https://de.wikipedia.org/wiki/Zenity">Zenity</a> erstellt, um das <code>geometrie Argument</code> zu übergeben.</p>
+<p><img src="resize.png" /></p>
+<pre><code>#!/bin/bash
+
+SIZE=$(zenity --entry --title=&quot;Geometrie Argument&quot; --text=&quot;Geometrie Argument eingeben:&quot;)
+
+while [ $# -gt 0 ]; do
+    convert &quot;$1&quot; -resize $SIZE &quot;$1&quot;
+    shift
+done</code></pre>
+<h3 id="weitere-beispiele">Weitere Beispiele</h3>
+<p>Weitere Beispiele sind im Projekt auf GitHub <a target="_blank" rel="noopener" href="https://github.com/MrReSc/NautilusScripts">https://github.com/MrReSc/NautilusScripts</a> verfügbar.</p>

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+while [ $# -gt 0 ]; do
+	pandoc "$1" -o "$1"".html"
+	sed -i 's|href="http|target="_blank" href="http|g' "$1"".html"
+	sed -i 's|href="http|rel="noopener" href="http|g' "$1"".html"
+	shift
+done
